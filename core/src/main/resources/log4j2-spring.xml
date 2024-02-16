@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="60">
+    <Properties>
+        <Property name="log-path">logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console-Appender" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>
+                    [%X{fileLogId} %X{filePath}][%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%c{1}:%M:%L] - %msg%n
+                </pattern>>
+            </PatternLayout>
+        </Console>
+        <RollingFile name="App-File-Appender" fileName="${log-path}/filetransformer.log" filePattern="${log-path}/filetransformer.%d{MM-dd-yyyy-HH-mm}.log"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <pattern>
+                    [%X{fileLogId} %X{filePath}][%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%c{1}:%M:%L] - %msg%n
+                </pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1000"/>
+        </RollingFile>
+        <RollingFile name="SpringBoot-File-Appender" fileName="${log-path}/springboot.log" filePattern="${log-path}/springboot_log.%d{MM-dd-yyyy-HH-mm}.log"
+                     ignoreExceptions="false">
+            <PatternLayout>
+                <pattern>
+                    [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+                </pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1000"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.springframework" additivity="false">
+            <AppenderRef ref="SpringBoot-File-Appender" level="warn"/>
+            <!-- Uncomment Console-Appender logging (if needed for local testing using IDE) -->
+            <AppenderRef ref="Console-Appender" level="info"/>
+
+        </Logger>
+        <Logger name="io.github.batchservices" additivity="false">
+            <AppenderRef ref="App-File-Appender" level="${APPLICATION_LOG_LEVEL}"/>
+            <!--  Uncomment Console-Appender logging (if needed for local testing using IDE) -->
+            <AppenderRef ref="Console-Appender" level="info"/>
+
+        </Logger>
+        <Root level="INFO">
+            <AppenderRef ref="App-File-Appender"/>
+            <!-- Uncomment Console-Appender logging (if needed for local testing using IDE) -->
+            <AppenderRef ref="Console-Appender"/>
+
+        </Root>
+    </Loggers>
+</Configuration>
